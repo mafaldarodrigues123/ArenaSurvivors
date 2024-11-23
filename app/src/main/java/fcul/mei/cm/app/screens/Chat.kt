@@ -41,7 +41,7 @@ fun ChatTemplate() {
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            reverseLayout = true // To start from the bottom like a chat app
+            reverseLayout = true
         ) {
             items(messages.size) { index ->
                 MessageBubble(message = messages[messages.size - 1 - index])
@@ -88,7 +88,7 @@ fun MessageBubble(message: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        contentAlignment = Alignment.CenterEnd // Align messages to the right
+        contentAlignment = Alignment.CenterEnd
     ) {
         Text(
             text = message,
