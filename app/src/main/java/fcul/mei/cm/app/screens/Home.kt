@@ -12,11 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import fcul.mei.cm.app.R
 import fcul.mei.cm.app.ui.theme.AppTheme
 
 @Composable
-fun Home(modifier: Modifier = Modifier) {
+fun Home(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -26,7 +30,9 @@ fun Home(modifier: Modifier = Modifier) {
                 .size(92.dp)
                 .align(Alignment.BottomStart)
                 .padding(16.dp),
-            onClick = {}
+            onClick = {
+                navController.navigate("chat")
+            }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.alliance),
@@ -36,10 +42,10 @@ fun Home(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppTheme {
-        Home()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    AppTheme {
+//        Home()
+//    }
+//}
