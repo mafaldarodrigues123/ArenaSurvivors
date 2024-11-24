@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "464117744033",
+    "project_id": "arenasurvivors-41eaf",
+    "storage_bucket": "arenasurvivors-41eaf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464117744033:android:da30a53a227d5d59c9cbe0",
+        "android_client_info": {
+          "package_name": "fcul.mei.cm.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYldMjWUkqOqE1pmWhaZzWHQqzwkczpzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

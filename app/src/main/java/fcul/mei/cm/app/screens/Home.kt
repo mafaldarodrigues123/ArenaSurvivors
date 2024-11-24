@@ -19,7 +19,7 @@ import fcul.mei.cm.app.ui.theme.AppTheme
 @Composable
 fun Home(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onClickChatButton:() -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -30,22 +30,25 @@ fun Home(
                 .size(92.dp)
                 .align(Alignment.BottomStart)
                 .padding(16.dp),
-            onClick = {
-                navController.navigate("chat")
-            }
+            onClick = onClickChatButton
         ) {
             Image(
                 painter = painterResource(id = R.drawable.alliance),
                 contentDescription = "Button Icon",
             )
         }
+
+        IconButton(
+            modifier = modifier
+                .size(92.dp)
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            onClick = { }
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.health),
+                contentDescription = "Button Icon",
+            )
+        }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    AppTheme {
-//        Home()
-//    }
-//}
