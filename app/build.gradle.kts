@@ -57,6 +57,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
+
+    //map dependencies
+    implementation (libs.maps.compose)
+    implementation (libs.play.services.maps)
+    implementation (libs.android.maps.utils)
+    implementation(libs.android)
+    implementation("com.mapbox.maps:android:11.8.0")
+    // If you're using compose also add the compose extension
+    implementation("com.mapbox.extension:maps-compose:11.8.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
