@@ -1,5 +1,7 @@
 [versions]
 agp = "8.7.1"
+android = "11.8.0"
+androidMapsUtils = "2.4.0"
 constraintlayoutCompose = "1.0.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
@@ -11,14 +13,20 @@ activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 firebaseCommonKtx = "21.0.0"
 firebaseFirestoreKtx = "25.1.1"
+mapsCompose = "2.13.0"
+mapsComposeVersion = "10.15.0"
 navigationCompose = "2.8.4"
 googleGmsGoogleServices = "4.4.2"
 firebaseFirestore = "25.1.1"
+playServicesMaps = "19.0.0"
 
 [libraries]
+android = { module = "com.mapbox.maps:android", version.ref = "android" }
+android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+extension-maps-compose = { module = "com.mapbox.extension:maps-compose", version.ref = "mapsComposeVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -35,6 +43,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
