@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "fcul.mei.cm.app"
-        minSdk = 35
+        minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -42,6 +42,9 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.gms:play-services-fitness:21.2.0")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
     implementation(libs.firebase.common.ktx)
     implementation(libs.firebase.firestore.ktx)
 
@@ -57,6 +60,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
+    implementation(libs.googleid)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
