@@ -4,5 +4,6 @@ enum class Routes {
     HOME,
     CHAT,
     ALLIANCES,
-    CREATE_ALLIANCE
+    CREATE_ALLIANCE,
+    FITNESS
 }

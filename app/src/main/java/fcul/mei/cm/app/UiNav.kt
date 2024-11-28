@@ -10,7 +10,7 @@ import fcul.mei.cm.app.screens.alliance.ChatTemplate
 import fcul.mei.cm.app.screens.Home
 import fcul.mei.cm.app.screens.alliance.CreateAlliance
 import fcul.mei.cm.app.utils.Routes
-
+import fcul.mei.cm.app.screens.fitness.Fitness
 @Composable
 fun UiNav(
     modifier: Modifier = Modifier,
@@ -22,6 +22,9 @@ fun UiNav(
                 modifier = modifier,
                 onClickChatButton = {
                     navController.navigate(Routes.ALLIANCES.name)
+                },
+                onClickHealthButton = {
+                    navController.navigate(Routes.FITNESS.name)
                 }
             )
         }
@@ -43,6 +46,12 @@ fun UiNav(
         }
         composable(route = Routes.CHAT.name) {
             ChatTemplate()
+        }
+        composable(route = Routes.FITNESS.name) {
+            Fitness(modifier = modifier,
+                onClick = {
+                navController.navigate(Routes.FITNESS.name)
+            })
         }
     }
 }

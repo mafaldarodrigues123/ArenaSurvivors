@@ -42,8 +42,8 @@ android {
 
 dependencies {
 
-    implementation("com.google.android.gms:play-services-fitness:21.2.0")
-    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation(libs.play.services.fitness)
+    implementation(libs.play.services.auth)
 
     implementation(libs.firebase.common.ktx)
     implementation(libs.firebase.firestore.ktx)
@@ -61,6 +61,16 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
     implementation(libs.googleid)
+    implementation(libs.play.services.maps)
+
+    //map dependencies
+    implementation (libs.maps.compose)
+    implementation (libs.play.services.maps)
+    implementation (libs.android.maps.utils)
+    implementation(libs.android)
+    implementation("com.mapbox.maps:android:11.8.0")
+    implementation("com.mapbox.extension:maps-compose:11.8.0")
+    implementation ("androidx.health.connect:connect-client:1.1.0-alpha10")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
