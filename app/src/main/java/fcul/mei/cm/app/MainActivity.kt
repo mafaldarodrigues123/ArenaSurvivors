@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         navController = navHostController
                     )
-                    //ArenaMapUi()
+                    ArenaMapUi()
                 }
             }
         }
