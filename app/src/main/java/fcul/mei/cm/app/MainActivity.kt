@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import fcul.mei.cm.app.ui.theme.AppTheme
 import fcul.mei.cm.app.ui.theme.arenaMap.ArenaMapUi
+import fcul.mei.cm.app.ui.theme.arenaMap.ArenaMapWithSendCoordinates
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +63,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         navController = navHostController
                     )
-                    ArenaMapUi()
+                    ArenaMapWithSendCoordinates()
                 }
             }
         }
