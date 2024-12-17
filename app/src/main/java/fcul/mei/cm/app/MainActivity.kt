@@ -1,9 +1,14 @@
 package fcul.mei.cm.app
 
+import FitnessViewModel
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -24,9 +29,21 @@ import fcul.mei.cm.app.ui.theme.AppTheme
 import fcul.mei.cm.app.ui.theme.arenaMap.ArenaMapUi
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private val fitnessViewModel: FitnessViewModel by viewModels()
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        if (accelerometer == null) {
+            Log.e("AccelerometerGame", "Accelerometer not available on this device.")
+        } else {
+            Log.d("AccelerometerGame", "Accelerometer found and ready.")
+        }
         enableEdgeToEdge()
         setContent {
             AppTheme {
@@ -60,7 +77,10 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     UiNav(
                         modifier = Modifier.padding(innerPadding),
-                        navController = navHostController
+                        navController = navHostController,
+                        sensorManager,
+                        accelerometer,
+                        fitnessViewModel
                     )
                     //ArenaMapUi()
                 }
