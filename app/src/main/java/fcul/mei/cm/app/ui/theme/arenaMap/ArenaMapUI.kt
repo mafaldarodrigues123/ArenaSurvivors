@@ -202,7 +202,7 @@ fun ArenaMapWithSendCoordinates(
     var userLatitude by remember { mutableDoubleStateOf(0.0) }
     var userLongitude by remember { mutableDoubleStateOf(0.0) }
 
-    Box(Modifier.size(200.dp)) {
+    Box(Modifier.size(300.dp)) {
         ArenaMapUi(
             pointLatitude = userLatitude,
             pointLongitude = userLongitude,

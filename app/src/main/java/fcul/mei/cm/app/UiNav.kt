@@ -51,7 +51,7 @@ fun UiNav(
             CreateAlliance(
                 modifier = modifier,
                 onComplete = {
-                    if(it) navController.navigate(Routes.HOME)
+                    if(it) navController.navigate(Routes.HOME.name)
                 }
             )
         }
