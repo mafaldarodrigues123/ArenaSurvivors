@@ -1,22 +1,21 @@
 package fcul.mei.cm.app
 
 import FitnessViewModel
-import android.app.Activity.SENSOR_SERVICE
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import fcul.mei.cm.app.screens.alliance.Alliances
-import fcul.mei.cm.app.screens.alliance.ChatTemplate
+import fcul.mei.cm.app.screens.chat.ChatTemplate
 import fcul.mei.cm.app.screens.Home
 import fcul.mei.cm.app.screens.alliance.CreateAlliance
 import fcul.mei.cm.app.screens.fitness.AccelerometerGame
 import fcul.mei.cm.app.utils.Routes
-import fcul.mei.cm.app.screens.fitness.Fitness
+import fcul.mei.cm.app.screens.arenaMap.ArenaMapWithSendCoordinates
+
 @Composable
 fun UiNav(
     modifier: Modifier = Modifier,
@@ -29,6 +28,7 @@ fun UiNav(
 
     NavHost(navController = navController, startDestination = Routes.HOME.name) {
         composable(route = Routes.HOME.name) {
+                ArenaMapWithSendCoordinates()
             Home(
                 modifier = modifier,
                 onClickChatButton = {
@@ -51,7 +51,7 @@ fun UiNav(
             CreateAlliance(
                 modifier = modifier,
                 onComplete = {
-                    if(it) navController.navigate(Routes.HOME.name)
+                    if(it) navController.navigate(Routes.HOME)
                 }
             )
         }

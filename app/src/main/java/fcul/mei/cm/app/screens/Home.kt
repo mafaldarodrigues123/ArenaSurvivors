@@ -40,7 +40,6 @@ fun Home(
 ) {
 
 
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -72,4 +71,3 @@ fun Home(
         }
     }
 }
-

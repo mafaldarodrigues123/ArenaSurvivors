@@ -10,32 +10,20 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.database.ktx.database
 import fcul.mei.cm.app.database.ChatRepository
+import fcul.mei.cm.app.screens.chat.ChatViewModel
 
-private val database = com.google.firebase.ktx.Firebase.database("https://arena-survivors-e1316-default-rtdb.europe-west1.firebasedatabase.app/")
+
+//TODO ir buscar o user e ser o owner e fazer a navigation
 
 @Composable
 fun CreateAlliance(
     modifier: Modifier,
     onComplete: (Boolean) -> Unit
 ) {
-    val chatRepository: ChatRepository = ChatRepository()
+    val chatRepository: ChatViewModel = ChatViewModel()
     var chatName by remember { mutableStateOf("") }
     var chatDescription by remember { mutableStateOf("") }
-
-
-    val chatNames = remember { mutableStateOf<List<String>>(emptyList()) }
-    var showWarning by remember { mutableStateOf(false) } // For displaying the warning
-
-    // Fetch chat names when the Composable is first displayed
-    LaunchedEffect(Unit) {
-        getChatNames { names ->
-            chatNames.value = names // Update the state with chat names
-        }
-    }
-
-
 
         Column(
             modifier = modifier
@@ -71,28 +59,14 @@ fun CreateAlliance(
                     .heightIn(min = 120.dp)
             )
 
-            if (showWarning) {
-                Text(
-                    text = "Chat name already exists, please choose another.",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            }
-
-            Button(onClick = {
-                if (chatNames.value.contains(chatName)) {
-                    showWarning = true // Show the warning
-                } else {
-                    showWarning = false
+            Button(
+                onClick = {
                     chatRepository.createChat(
                         chatName = chatName,
                         owner = "mafalda",
                         description = chatDescription,
-                        onComplete = onComplete
                     )
-                }
-            },
+                },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = chatName.isNotBlank() && chatDescription.isNotBlank()
             ) {
@@ -102,19 +76,4 @@ fun CreateAlliance(
                 )
             }
     }
-
-}
-
-fun getChatNames(onResult: (List<String>) -> Unit) {
-    val chatsRef = database.getReference("chats")
-
-    chatsRef.get()
-        .addOnSuccessListener { dataSnapshot ->
-            val chatNames = dataSnapshot.children.mapNotNull { it.key }
-            onResult(chatNames) // Pass the result to the callback
-        }
-        .addOnFailureListener { e ->
-            println("Error retrieving chats: ${e.message}")
-            onResult(emptyList()) // Return an empty list in case of an error
-        }
 }

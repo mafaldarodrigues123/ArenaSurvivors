@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
-
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
-    <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
-    <uses-permission android:name="android.permission.health.WRITE_HEART_RATE"/>
-    <uses-permission android:name="android.permission.health.READ_STEPS"/>
-    <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
-    <uses-permission android:name="android.permission.health.READ_EXERCISE"/>
-    <uses-permission android:name="android.permission.health.WRITE_EXERCISE"/>
-    <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
-    <uses-permission android:name="android.permission.health.WRITE_TOTAL_CALORIES_BURNED"/>
-    <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
-    <uses-permission android:name="android.permission.health.WRITE_WEIGHT"/>
-
-
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -42,15 +28,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBtoc6bmxHkVfNJzUjlEF7pGac_akTc2v8" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
-    <queries>
-        <package android:name="com.google.android.apps.healthdata" />
-    </queries>
-
 
 </manifest>

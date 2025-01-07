@@ -9,6 +9,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,28 +28,20 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
-import fcul.mei.cm.app.screens.fitness.HealthConnectManager
 import fcul.mei.cm.app.ui.theme.AppTheme
-import fcul.mei.cm.app.ui.theme.arenaMap.ArenaMapUi
-import fcul.mei.cm.app.ui.theme.arenaMap.ArenaMapWithSendCoordinates
+import fcul.mei.cm.app.screens.arenaMap.ArenaMapUi
+import fcul.mei.cm.app.screens.arenaMap.ArenaMapWithSendCoordinates
 
 class MainActivity : ComponentActivity() {
 
-
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
-
-
-
+    private val fitnessViewModel: FitnessViewModel by viewModels()
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var healthConnectManager = HealthConnectManager(applicationContext)
 
-        // Initialize FitnessViewModel with HealthConnectManager
-        val fitnessViewModel = FitnessViewModel(healthConnectManager)
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         if (accelerometer == null) {
@@ -85,7 +80,6 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                 ) { innerPadding ->
-
                     UiNav(
                         modifier = Modifier.padding(innerPadding),
                         navController = navHostController,
@@ -93,7 +87,6 @@ class MainActivity : ComponentActivity() {
                         accelerometer,
                         fitnessViewModel
                     )
-                    //ArenaMapWithSendCoordinates()
                 }
             }
         }

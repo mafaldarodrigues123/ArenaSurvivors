@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.gms.google.services)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.play.services.fitness)
     implementation(libs.play.services.auth)
 
@@ -70,26 +69,8 @@ dependencies {
     implementation(libs.android)
     implementation("com.mapbox.maps:android:11.8.0")
     implementation("com.mapbox.extension:maps-compose:11.8.0")
-    implementation (libs.androidx.connect.client)
-    implementation (libs.androidx.activity.ktx)
-    implementation (libs.firebase.auth)
-    implementation (libs.play.services.auth.v2050) // Google Sign-In
-    implementation ("androidx.credentials:credentials:<latest version>")
-    implementation ("androidx.credentials:credentials-play-services-auth:<latest version>")
-    implementation ("com.google.android.libraries.identity.googleid:googleid:<latest version>")
-    // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
-
-    // Add the dependency for the Firebase Authentication library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation("com.google.firebase:firebase-auth")
-
-    // Also add the dependency for the Google Play services library and specify its version
-    implementation("com.google.android.gms:play-services-auth:21.0.0")
-    implementation(libs.firebase.database.ktx)
-    implementation(libs.firebase.appcheck.ktx)
-    implementation(libs.firebase.appcheck.debug)
-    implementation(libs.firebase.storage.ktx)
+    implementation ("androidx.health.connect:connect-client:1.1.0-alpha10")
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -97,4 +78,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation("com.firebaseui:firebase-ui-database:8.0.2")
+
+
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
 }

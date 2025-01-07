@@ -1,4 +1,4 @@
-package fcul.mei.cm.app.screens.alliance
+package fcul.mei.cm.app.screens.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

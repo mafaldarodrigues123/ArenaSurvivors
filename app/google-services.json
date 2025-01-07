@@ -1,37 +1,26 @@
 {
   "project_info": {
-    "project_number": "736418149781",
-    "firebase_url": "https://arena-survivors-e1316-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "arena-survivors-e1316",
-    "storage_bucket": "arena-survivors-e1316.firebasestorage.app"
+    "project_number": "266713404419",
+    "project_id": "arenafcul",
+    "storage_bucket": "arenafcul.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:736418149781:android:a03a31600354626b14329c",
+        "mobilesdk_app_id": "1:266713404419:android:3d71abfe59e9eaf5edea36",
         "android_client_info": {
           "package_name": "fcul.mei.cm.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "736418149781-4i8kgskkpv1ndiv9l8vtj49s4k430f5b.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCt738RJ_4xkOhXUEfJC3BJBqRyzqRqhOc"
+          "current_key": "AIzaSyBFYJcNqJ5WGjFrFk_vIb8OiTAt_sXl8gY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "736418149781-4i8kgskkpv1ndiv9l8vtj49s4k430f5b.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

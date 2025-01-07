@@ -1,11 +1,13 @@
-package fcul.mei.cm.app.ui.theme.arenaMap
+package fcul.mei.cm.app.screens.arenaMap
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,7 +31,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
@@ -37,16 +41,20 @@ import com.google.maps.android.data.kml.KmlLayer
 import fcul.mei.cm.app.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MarkerOptions
+import fcul.mei.cm.app.database.CoordinatesDatabase
+import fcul.mei.cm.app.domain.Coordinates
 
 @Composable
 fun ArenaMapUi(
     modifier: Modifier = Modifier,
     pointLatitude: Double = 0.0,
     pointLongitude: Double = 0.0,
-    onSendCoordinates: (Double, Double) -> Unit = { _, _ -> }
+    onSendCoordinates: (Double, Double) -> Unit = { _, _ -> },
 ) {
+
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val coordinatesViewModel = viewModel<ArenaMapViewModel>()
     val mapView = remember { MapView(context) }
 
     val latitude = 36.9796541
@@ -183,6 +191,7 @@ fun SendCoordinatesDialog(
                 onSubmit(lat, lng)
                 onDismiss()
             }) {
+
                 Text("Submit")
             }
         },
@@ -201,8 +210,9 @@ fun ArenaMapWithSendCoordinates(
     var showDialog by remember { mutableStateOf(false) }
     var userLatitude by remember { mutableDoubleStateOf(0.0) }
     var userLongitude by remember { mutableDoubleStateOf(0.0) }
+    val coordinates = CoordinatesDatabase()
 
-    Box(Modifier.size(300.dp)) {
+    Box(Modifier.fillMaxWidth()) {
         ArenaMapUi(
             pointLatitude = userLatitude,
             pointLongitude = userLongitude,
@@ -215,8 +225,13 @@ fun ArenaMapWithSendCoordinates(
                 onSubmit = { lat, lng ->
                     userLatitude = lat
                     userLongitude = lng
+
+                    coordinates.saveCoordinates(
+                        "2",
+                        Coordinates(userLongitude,userLatitude)
+                    )
                 }
             )
         }
     }
-}
+ }
