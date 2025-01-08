@@ -37,6 +37,7 @@ fun Home(
     modifier: Modifier = Modifier,
     onClickChatButton:() -> Unit,
     onClickHealthButton:() -> Unit,
+    onClickAliacesList: () -> Unit,
 ) {
 
 
@@ -63,6 +64,19 @@ fun Home(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             onClick = onClickHealthButton
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.health),
+                contentDescription = "Button Icon",
+            )
+        }
+
+        IconButton(
+            modifier = modifier
+                .size(92.dp)
+                .align(Alignment.TopEnd)
+                .padding(16.dp),
+            onClick = onClickAliacesList
         ) {
             Image(
                 painter = painterResource(id = R.drawable.health),

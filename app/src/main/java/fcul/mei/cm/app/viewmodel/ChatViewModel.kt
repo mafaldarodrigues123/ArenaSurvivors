@@ -1,9 +1,10 @@
-package fcul.mei.cm.app.screens.chat
+package fcul.mei.cm.app.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import fcul.mei.cm.app.database.ChatRepository
 
-class ChatViewModel {
+class ChatViewModel : ViewModel(){
 
     private val chatRepository: ChatRepository = ChatRepository()
 
@@ -13,6 +14,10 @@ class ChatViewModel {
             if (result) Log.d("Chat","Chat was created!")
             else Log.w("Chat","Chat was not created!")
         }
+
+    }
+
+    fun getAllChats(){
 
     }
 

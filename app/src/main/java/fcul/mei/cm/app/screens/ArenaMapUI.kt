@@ -1,11 +1,10 @@
-package fcul.mei.cm.app.screens.arenaMap
+package fcul.mei.cm.app.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -41,8 +39,9 @@ import com.google.maps.android.data.kml.KmlLayer
 import fcul.mei.cm.app.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MarkerOptions
-import fcul.mei.cm.app.database.CoordinatesDatabase
+import fcul.mei.cm.app.database.CoordinatesRepository
 import fcul.mei.cm.app.domain.Coordinates
+import fcul.mei.cm.app.viewmodel.ArenaMapViewModel
 
 @Composable
 fun ArenaMapUi(
@@ -210,7 +209,7 @@ fun ArenaMapWithSendCoordinates(
     var showDialog by remember { mutableStateOf(false) }
     var userLatitude by remember { mutableDoubleStateOf(0.0) }
     var userLongitude by remember { mutableDoubleStateOf(0.0) }
-    val coordinates = CoordinatesDatabase()
+    val coordinates = CoordinatesRepository()
 
     Box(Modifier.fillMaxWidth()) {
         ArenaMapUi(

@@ -1,6 +1,5 @@
-package fcul.mei.cm.app.screens.fitness
+package fcul.mei.cm.app.screens
 
-import FitnessViewModel
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -30,9 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.delay
-import java.lang.Thread.sleep
+import fcul.mei.cm.app.viewmodel.FitnessViewModel
 import kotlin.math.sqrt
 
 @Composable

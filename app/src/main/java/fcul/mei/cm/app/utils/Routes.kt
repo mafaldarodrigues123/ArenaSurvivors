@@ -5,5 +5,6 @@ enum class Routes {
     CHAT,
     ALLIANCES,
     CREATE_ALLIANCE,
-    FITNESS
+    FITNESS,
+    ALLIANCES_LIST
 }

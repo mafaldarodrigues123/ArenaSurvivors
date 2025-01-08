@@ -1,6 +1,6 @@
 package fcul.mei.cm.app
 
-import FitnessViewModel
+import fcul.mei.cm.app.viewmodel.FitnessViewModel
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.compose.runtime.Composable
@@ -8,13 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import fcul.mei.cm.app.screens.alliance.Alliances
-import fcul.mei.cm.app.screens.chat.ChatTemplate
+import fcul.mei.cm.app.screens.CreateAlliances
+import fcul.mei.cm.app.screens.ChatTemplate
 import fcul.mei.cm.app.screens.Home
-import fcul.mei.cm.app.screens.alliance.CreateAlliance
-import fcul.mei.cm.app.screens.fitness.AccelerometerGame
+import fcul.mei.cm.app.screens.CreateAllianceTemplate
+import fcul.mei.cm.app.screens.AlliancesList
+import fcul.mei.cm.app.screens.AccelerometerGame
 import fcul.mei.cm.app.utils.Routes
-import fcul.mei.cm.app.screens.arenaMap.ArenaMapWithSendCoordinates
+import fcul.mei.cm.app.screens.ArenaMapWithSendCoordinates
 
 @Composable
 fun UiNav(
@@ -36,11 +37,17 @@ fun UiNav(
                 },
                 onClickHealthButton = {
                     navController.navigate(Routes.FITNESS.name)
+                },
+                onClickAliacesList = {
+                    navController.navigate(Routes.ALLIANCES_LIST.name)
                 }
             )
         }
+        composable(route = Routes.ALLIANCES_LIST.name) {
+            AlliancesList()
+        }
         composable(route = Routes.ALLIANCES.name) {
-            Alliances(
+            CreateAlliances(
                 modifier = modifier,
                 onClick = {
                     navController.navigate(Routes.CREATE_ALLIANCE.name)
@@ -48,7 +55,7 @@ fun UiNav(
             )
         }
         composable(route = Routes.CREATE_ALLIANCE.name) {
-            CreateAlliance(
+            CreateAllianceTemplate(
                 modifier = modifier,
                 onComplete = {
                     if(it) navController.navigate(Routes.HOME)

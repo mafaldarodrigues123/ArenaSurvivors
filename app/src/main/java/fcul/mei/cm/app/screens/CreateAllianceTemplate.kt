@@ -1,4 +1,4 @@
-package fcul.mei.cm.app.screens.alliance
+package fcul.mei.cm.app.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,14 +10,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fcul.mei.cm.app.database.ChatRepository
-import fcul.mei.cm.app.screens.chat.ChatViewModel
+import fcul.mei.cm.app.viewmodel.ChatViewModel
 
 
 //TODO ir buscar o user e ser o owner e fazer a navigation
-
 @Composable
-fun CreateAlliance(
+fun CreateAllianceTemplate(
     modifier: Modifier,
     onComplete: (Boolean) -> Unit
 ) {

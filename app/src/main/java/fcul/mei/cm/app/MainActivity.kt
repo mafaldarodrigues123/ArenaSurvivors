@@ -1,6 +1,6 @@
 package fcul.mei.cm.app
 
-import FitnessViewModel
+import fcul.mei.cm.app.viewmodel.FitnessViewModel
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
@@ -9,14 +9,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,13 +20,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import fcul.mei.cm.app.ui.theme.AppTheme
-import fcul.mei.cm.app.screens.arenaMap.ArenaMapUi
-import fcul.mei.cm.app.screens.arenaMap.ArenaMapWithSendCoordinates
 
 class MainActivity : ComponentActivity() {
 
@@ -55,7 +47,6 @@ class MainActivity : ComponentActivity() {
                 val navHostController = rememberNavController()
                 Scaffold(
                     topBar = {
-
                         TopAppBar(
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = MaterialTheme.colorScheme.primary,

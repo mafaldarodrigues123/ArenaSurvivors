@@ -8,13 +8,13 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import fcul.mei.cm.app.domain.Coordinates
 
-class CoordinatesDatabase {
+class CoordinatesRepository {
 
-    private val database = Firebase.database(
+    private val db = Firebase.database(
         url = "https://arenafcul-default-rtdb.europe-west1.firebasedatabase.app/"
     )
 
-    private val myRef = database.getReference("coordinates")
+    private val myRef = db.getReference("coordinates")
 
     private val userRepository = ChatRepository()
 
