@@ -10,15 +10,28 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fcul.mei.cm.app.domain.Alliances
+import fcul.mei.cm.app.viewmodel.ChatViewModel
 
 @Composable
-fun AlliancesList(groups: List<Alliances>) {
+fun AlliancesList(viewModel: ChatViewModel) {
+    var a by remember { mutableStateOf<List<Alliances>>(emptyList()) }
+    LaunchedEffect (Unit){
+        viewModel.getAllChats().collect{
+            a = it
+        }
+    }
+
     LazyColumn {
-        items(groups) { group ->
+        items(a) { group ->
             GroupCard(group = group)
         }
     }
@@ -37,13 +50,11 @@ fun GroupCard(group: Alliances) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "Name: ${group.groupName}",
-                //style = MaterialTheme.typography.h6
+                text = "Name: ${group.chatName}",
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Description: ${group.description}",
-                //style = MaterialTheme.typography.body1,
                 color = Color.Gray
             )
         }

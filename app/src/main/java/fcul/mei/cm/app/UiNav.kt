@@ -16,6 +16,7 @@ import fcul.mei.cm.app.screens.AlliancesList
 import fcul.mei.cm.app.screens.AccelerometerGame
 import fcul.mei.cm.app.utils.Routes
 import fcul.mei.cm.app.screens.ArenaMapWithSendCoordinates
+import fcul.mei.cm.app.viewmodel.ChatViewModel
 
 @Composable
 fun UiNav(
@@ -26,6 +27,7 @@ fun UiNav(
     fitnessViewModel: FitnessViewModel
 ) {
 
+    val chatViewModel = ChatViewModel()
 
     NavHost(navController = navController, startDestination = Routes.HOME.name) {
         composable(route = Routes.HOME.name) {
@@ -44,7 +46,7 @@ fun UiNav(
             )
         }
         composable(route = Routes.ALLIANCES_LIST.name) {
-            AlliancesList()
+            AlliancesList(chatViewModel)
         }
         composable(route = Routes.ALLIANCES.name) {
             CreateAlliances(

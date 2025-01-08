@@ -3,6 +3,10 @@ package fcul.mei.cm.app.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import fcul.mei.cm.app.database.ChatRepository
+import fcul.mei.cm.app.domain.Alliances
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
 
 class ChatViewModel : ViewModel(){
 
@@ -17,8 +21,7 @@ class ChatViewModel : ViewModel(){
 
     }
 
-    fun getAllChats(){
-
-    }
+     fun getAllChats() =
+         chatRepository.getAllChats()
 
 }
