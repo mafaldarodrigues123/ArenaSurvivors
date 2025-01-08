@@ -55,6 +55,7 @@ class MainActivity : ComponentActivity() {
                 val navHostController = rememberNavController()
                 Scaffold(
                     topBar = {
+
                         TopAppBar(
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
