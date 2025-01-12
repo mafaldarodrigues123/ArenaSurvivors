@@ -23,7 +23,7 @@ fun AddUserScreen(
     var name by remember { mutableStateOf("") }
     var showConfirmation by remember { mutableStateOf(false) }
 
-    if(userViewModel.getUserId() == null) {
+    if(userViewModel.isUserAdded.value) {
         if (showConfirmation) {
             Text(
                 text = "User added successfully!",

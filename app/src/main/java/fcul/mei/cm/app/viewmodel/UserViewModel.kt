@@ -3,6 +3,8 @@ package fcul.mei.cm.app.viewmodel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import fcul.mei.cm.app.database.UserRepository
 import fcul.mei.cm.app.domain.User
@@ -13,6 +15,9 @@ class UserViewModel(
 ) : ViewModel() {
 
     private val userRepository = UserRepository()
+
+    private val _isUserAdded = mutableStateOf(false)
+    val isUserAdded: MutableState<Boolean> = _isUserAdded
 
     fun addUser(district: Int, name: String) {
         val userId = getUserId()
@@ -50,9 +55,13 @@ class UserViewModel(
         }
     }
 
-    fun getUserId() =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                                 .getString(KEY_USER_ID, null)
+    fun getUserId() : String? {
+        val user = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getString(KEY_USER_ID, null)
+        _isUserAdded.value = user != null
+        return user
+    }
+
 
     companion object {
         private const val TAG = "--User_ViewModel"
