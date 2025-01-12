@@ -18,59 +18,70 @@ import fcul.mei.cm.app.viewmodel.UserViewModel
 fun AddUserScreen(
     userViewModel: UserViewModel,
     onClickUserAdded: (Boolean) -> Unit
-
 ) {
     var district by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var showConfirmation by remember { mutableStateOf(false) }
 
-    if (showConfirmation) {
-        Text(
-            text = "User added successfully!",
-            modifier = Modifier.padding(16.dp),
-            color = Color.Green,
-            fontSize = 18.sp
-        )
-        onClickUserAdded(showConfirmation)
-    }
+    if(userViewModel.getUserId() == null) {
+        if (showConfirmation) {
+            Text(
+                text = "User added successfully!",
+                modifier = Modifier.padding(16.dp),
+                color = Color.Green,
+                fontSize = 18.sp
+            )
+            onClickUserAdded(showConfirmation)
+        }
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        OutlinedTextField(
-            value = district,
-            onValueChange = { district = it },
-            label = { Text("District") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-        )
-
-        Button(
-            onClick = {
-                if (district.isNotEmpty() && name.isNotEmpty()) {
-                    userViewModel.addUser(district.toInt(), name)
-                    showConfirmation = true
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Add User")
+            OutlinedTextField(
+                value = district,
+                onValueChange = { district = it },
+                label = { Text("District") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            )
+
+            Button(
+                onClick = {
+                    if (district.isNotEmpty() && name.isNotEmpty()) {
+                        userViewModel.addUser(district.toInt(), name)
+                        showConfirmation = true
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+                Text("Add User")
+            }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Tribute already registered")
         }
     }
 }
