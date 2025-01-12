@@ -29,7 +29,9 @@ fun UiNav(
     fitnessViewModel: FitnessViewModel
 ) {
 
-    val chatViewModel = AlliancesViewModel()
+    val chatViewModel = AlliancesViewModel(UserViewModel(
+        LocalContext.current
+    ))
 
     NavHost(navController = navController, startDestination = Routes.HOME.name) {
         composable(route = Routes.HOME.name) {
@@ -60,7 +62,11 @@ fun UiNav(
 
         composable(route = Routes.CREATE_ALLIANCE.name) {
             CreateAllianceTemplate(
-                viewModel = AlliancesViewModel(),
+                viewModel = AlliancesViewModel(
+                    UserViewModel(
+                        LocalContext.current
+                    )
+                ),
                 modifier = modifier,
                 onClickCreateAlliance = {
                     navController.navigate(Routes.CHAT.name)
@@ -70,7 +76,9 @@ fun UiNav(
 
         composable(route = Routes.CHAT.name) {
             ChatTemplate(
-                viewModel = AlliancesViewModel(),
+                viewModel = AlliancesViewModel(UserViewModel(
+                    LocalContext.current
+                )),
                 modifier = modifier
             )
         }
