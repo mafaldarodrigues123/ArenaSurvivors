@@ -59,6 +59,7 @@ fun CreateAllianceTemplate(
                     .heightIn(min = 120.dp)
             )
 
+            // todo mandar o owner id
             Button(
                 onClick = {
                     val result = viewModel.createChat(

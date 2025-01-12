@@ -1,5 +1,6 @@
 package fcul.mei.cm.app.screens.alliances
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -56,7 +57,8 @@ fun ChatTemplate(
     var isPanelVisible by remember { mutableStateOf(false) } // Controla a visibilidade da janela deslizante
     var a by remember { mutableStateOf<List<User>>(emptyList()) }
     LaunchedEffect (Unit){
-        AlliancesRepository().getAllMembers("abcdefghij").collect{
+        AlliancesRepository().getAllMembers("AAAAAAAAA").collect{
+            Log.d("AAAAAAA", "$it")
             a = it
         }
     }

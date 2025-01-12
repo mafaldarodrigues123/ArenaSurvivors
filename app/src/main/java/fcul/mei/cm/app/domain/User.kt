@@ -8,7 +8,7 @@ data class User (
     val role: String,
     val name: String,
     val status: String,
-    val coordinates: Coordinates,
+    val joinedAt: Long,
 ) {
     init {
         require(district in 1 until 13)

@@ -30,10 +30,14 @@ class AlliancesRepository {
             .set(chatData)
             .addOnSuccessListener {
                 val adminData = hashMapOf(
-                    "id" to owner,
-                    "role" to "admin",
+                    "id" to "12222111",
+                    "district" to 1,
+                    "role" to "member",
+                    "name" to "ines",
+                    "status" to "entered",
                     "joinedAt" to System.currentTimeMillis()
                 )
+
 
                 db.collection("chats").document(chatName)
                     .collection("participants").document(owner)
