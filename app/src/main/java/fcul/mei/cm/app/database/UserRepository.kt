@@ -90,7 +90,7 @@ class UserRepository {
                 onComplete(false)
             }
 
-        getAll { users ->
+        getAllUser { users ->
             val sameDistrictUser = users.firstOrNull{user.district == it.district}
             if (sameDistrictUser != null){
                 chatRepository.createChat(
@@ -138,7 +138,7 @@ class UserRepository {
     }
 
 
-    private fun getAll(callback: (List<User>) -> Unit) {
+     fun getAllUser(callback: (List<User>) -> Unit) {
         db.collection("users")
             .get()
             .addOnSuccessListener { result ->

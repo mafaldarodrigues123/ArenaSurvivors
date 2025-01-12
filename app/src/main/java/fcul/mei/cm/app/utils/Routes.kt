@@ -7,5 +7,6 @@ enum class Routes {
     CREATE_ALLIANCE,
     FITNESS,
     ALLIANCES_LIST,
+    CREATE_USER,
     POPUP_ALLIANCE_NOT_CREATED
 }

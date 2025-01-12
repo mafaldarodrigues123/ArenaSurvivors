@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,9 +14,11 @@ import fcul.mei.cm.app.screens.Home
 import fcul.mei.cm.app.screens.alliances.CreateAllianceTemplate
 import fcul.mei.cm.app.screens.alliances.AlliancesList
 import fcul.mei.cm.app.screens.health.AccelerometerGame
+import fcul.mei.cm.app.screens.AddUserScreen
 import fcul.mei.cm.app.utils.Routes
 import fcul.mei.cm.app.screens.map.ArenaMapWithSendCoordinates
 import fcul.mei.cm.app.viewmodel.AlliancesViewModel
+import fcul.mei.cm.app.viewmodel.UserViewModel
 
 @Composable
 fun UiNav(
@@ -41,6 +44,9 @@ fun UiNav(
                 },
                 onClickAliacesList = {
                     navController.navigate(Routes.ALLIANCES_LIST.name)
+                },
+                onClickUserButton = {
+                    navController.navigate(Routes.CREATE_USER.name)
                 }
             )
         }
@@ -70,7 +76,15 @@ fun UiNav(
         }
 
         composable(route = Routes.FITNESS.name) {
-            AccelerometerGame(sensorManager, accelerometer, fitnessViewModel)
+            AccelerometerGame(sensorManager, accelerometer,fitnessViewModel)
+            }
+
+        composable(route = Routes.CREATE_USER.name) {
+            AddUserScreen(
+                userViewModel = UserViewModel(
+                    LocalContext.current
+                )
+            )
         }
     }
 }
