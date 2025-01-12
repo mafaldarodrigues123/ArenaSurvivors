@@ -8,14 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import fcul.mei.cm.app.screens.CreateAlliances
-import fcul.mei.cm.app.screens.ChatTemplate
+import com.mapbox.maps.extension.style.expressions.dsl.generated.mod
+import fcul.mei.cm.app.screens.alliances.ChatTemplate
 import fcul.mei.cm.app.screens.Home
-import fcul.mei.cm.app.screens.CreateAllianceTemplate
-import fcul.mei.cm.app.screens.AlliancesList
-import fcul.mei.cm.app.screens.AccelerometerGame
+import fcul.mei.cm.app.screens.alliances.CreateAllianceTemplate
+import fcul.mei.cm.app.screens.alliances.AlliancesList
+import fcul.mei.cm.app.screens.health.AccelerometerGame
 import fcul.mei.cm.app.utils.Routes
-import fcul.mei.cm.app.screens.ArenaMapWithSendCoordinates
+import fcul.mei.cm.app.screens.map.ArenaMapWithSendCoordinates
 import fcul.mei.cm.app.viewmodel.ChatViewModel
 
 @Composable
@@ -46,21 +46,17 @@ fun UiNav(
             )
         }
         composable(route = Routes.ALLIANCES_LIST.name) {
-            AlliancesList(chatViewModel)
-        }
-        composable(route = Routes.ALLIANCES.name) {
-            CreateAlliances(
+            AlliancesList(
                 modifier = modifier,
-                onClick = {
-                    navController.navigate(Routes.CREATE_ALLIANCE.name)
-                }
+                viewModel = chatViewModel,
+                onCreateAllianceClick = { navController.navigate(Routes.CREATE_ALLIANCE.name) }
             )
         }
         composable(route = Routes.CREATE_ALLIANCE.name) {
             CreateAllianceTemplate(
                 modifier = modifier,
                 onComplete = {
-                    if(it) navController.navigate(Routes.HOME)
+                    if(it) navController.navigate(Routes.CHAT)
                 }
             )
         }

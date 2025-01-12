@@ -1,4 +1,4 @@
-package fcul.mei.cm.app.screens
+package fcul.mei.cm.app.screens.alliances
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions

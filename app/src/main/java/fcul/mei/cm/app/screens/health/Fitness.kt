@@ -1,4 +1,4 @@
-package fcul.mei.cm.app.screens
+package fcul.mei.cm.app.screens.health
 
 import android.Manifest
 import android.app.Activity

@@ -3,7 +3,6 @@ package fcul.mei.cm.app.database
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import fcul.mei.cm.app.domain.User
-import fcul.mei.cm.app.screens.ChatTemplate
 
 class UserRepository {
     val db = Firebase.firestore

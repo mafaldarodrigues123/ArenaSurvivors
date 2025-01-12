@@ -1,4 +1,4 @@
-package fcul.mei.cm.app.screens
+package fcul.mei.cm.app.screens.map
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
