@@ -16,7 +16,9 @@ import fcul.mei.cm.app.viewmodel.UserViewModel
 
 @Composable
 fun AddUserScreen(
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    onClickUserAdded: (Boolean) -> Unit
+
 ) {
     var district by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
@@ -29,7 +31,9 @@ fun AddUserScreen(
             color = Color.Green,
             fontSize = 18.sp
         )
+        onClickUserAdded(showConfirmation)
     }
+
 
     Column(
         modifier = Modifier

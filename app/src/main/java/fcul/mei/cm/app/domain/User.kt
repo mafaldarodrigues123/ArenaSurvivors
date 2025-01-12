@@ -4,13 +4,13 @@ import java.util.UUID
 
 data class User (
     val id: String = UUID.randomUUID().toString(),
-    val district: Int,
-    val role: String = "",
-    val name: String,
-    val status: String = "",
-    val joinedAt: Long,
+    val district: Int = 0,
+    val role: String = "participant",
+    val name: String = "",
+    val status: String = "none",
+    val joinedAt: Long = 0,
 ) {
     init {
-        require(district in 1 until 13)
+        require(district in 0 until 13)
     }
 }

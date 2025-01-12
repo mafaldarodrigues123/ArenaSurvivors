@@ -83,7 +83,10 @@ fun UiNav(
             AddUserScreen(
                 userViewModel = UserViewModel(
                     LocalContext.current
-                )
+                ),
+                onClickUserAdded =  {
+                    navController.navigate(Routes.HOME.name)
+                }
             )
         }
     }

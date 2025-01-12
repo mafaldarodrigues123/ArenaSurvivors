@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import fcul.mei.cm.app.database.UserRepository
-import fcul.mei.cm.app.domain.Coordinates
 import fcul.mei.cm.app.domain.User
 
 @SuppressLint("StaticFieldLeak")
@@ -24,8 +23,7 @@ class UserViewModel(
 
         val user = User(
             district = district,
-            name = name,
-            coordinates = Coordinates(),
+            name = name
         )
 
         userRepository.addUser(user) { userAdded ->
