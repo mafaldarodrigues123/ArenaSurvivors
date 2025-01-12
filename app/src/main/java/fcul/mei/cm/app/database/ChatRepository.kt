@@ -1,6 +1,7 @@
 package fcul.mei.cm.app.database
 
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import fcul.mei.cm.app.domain.Alliances
 import fcul.mei.cm.app.domain.User
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 //TODO meter no chat automatico tudo owner
 class ChatRepository{
@@ -55,22 +57,16 @@ class ChatRepository{
             }
     }
 
-    fun getAllChats() = flow {
-        val list = listOf(Alliances(), Alliances())
-        val list1 = listOf(Alliances(), Alliances(), Alliances(), Alliances(chatName = "AAAAAA"))
-        emit(list)
-        kotlinx.coroutines.delay(5000)
-        emit(list1)
+    fun getAllChats(): Flow<List<Alliances>> = flow {
+        try {
+            val initialList = db.collection("chats")
+                .get()
+                .await()
+                .map { document -> document.toObject(Alliances::class.java) }
+            emit(initialList)
+        } catch (e: Exception) {
+            emit(emptyList())
+            e.printStackTrace()
+        }
     }
-//        db.collection("chats")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                var a = result.map { document ->
-//                        document.toObject(Alliances::class.java)
-//                    }
-//
-//            }
-//            .addOnFailureListener {
-//            }
-//        }
 }
