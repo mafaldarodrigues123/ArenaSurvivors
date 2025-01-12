@@ -6,7 +6,7 @@ import fcul.mei.cm.app.domain.User
 
 class UserRepository {
     val db = Firebase.firestore
-    val chatRepository = ChatRepository()
+    val chatRepository = AlliancesRepository()
 
 
     fun addParticipantToChat(chatName: String, participantId: String, onComplete: (Boolean) -> Unit) {

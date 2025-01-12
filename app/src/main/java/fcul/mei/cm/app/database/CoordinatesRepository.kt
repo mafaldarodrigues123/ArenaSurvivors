@@ -16,7 +16,7 @@ class CoordinatesRepository {
 
     private val myRef = db.getReference("coordinates")
 
-    private val userRepository = ChatRepository()
+    private val userRepository = AlliancesRepository()
 
     fun saveCoordinates(userId: String, coordinates: Coordinates){
         Log.d(TAG, "Value is: $coordinates")

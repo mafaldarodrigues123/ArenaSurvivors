@@ -1,20 +1,16 @@
 package fcul.mei.cm.app.database
 
+import android.util.Log
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import fcul.mei.cm.app.domain.Alliances
 import fcul.mei.cm.app.domain.User
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 //TODO meter no chat automatico tudo owner
-class ChatRepository{
+class AlliancesRepository {
     val db = Firebase.firestore
 
     fun createChat(
@@ -68,5 +64,49 @@ class ChatRepository{
             emit(emptyList())
             e.printStackTrace()
         }
+    }
+
+    fun getAllMembers(chatName: String) = flow {
+        try {
+            val members = db.collection("chats").document(chatName)
+                .collection("participants")
+                .get()
+                .await()
+                .map { document -> document.toObject(User::class.java)  }
+            emit(members)
+        } catch (e: Exception) {
+            emit(emptyList())
+            e.printStackTrace()
+        }
+    }
+
+    fun addMember(
+        chatName: String,
+        memberId: String,
+        memberName: String,
+        district: Int,
+        status: String = "pending",
+        onComplete: (Boolean) -> Unit
+    ) {
+        val memberData = hashMapOf(
+            "id" to memberId,
+            "district" to district,
+            "role" to "member",
+            "name" to memberName,
+            "status" to status,
+            "joinedAt" to System.currentTimeMillis()
+        )
+
+        db.collection("chats").document(chatName)
+            .collection("participants").document(memberId)
+            .set(memberData)
+            .addOnSuccessListener {
+                Log.d("ALLIANCES", "Member added successfully with status: $status")
+                onComplete(true)
+            }
+            .addOnFailureListener { e ->
+                Log.d("ALLIANCES", "Error adding member: ${e.message}")
+                onComplete(false)
+            }
     }
 }

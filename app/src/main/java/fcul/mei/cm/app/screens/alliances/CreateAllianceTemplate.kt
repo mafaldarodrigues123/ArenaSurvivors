@@ -10,16 +10,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fcul.mei.cm.app.viewmodel.ChatViewModel
+import fcul.mei.cm.app.viewmodel.AlliancesViewModel
 
 
 //TODO ir buscar o user e ser o owner e fazer a navigation
+// TODO se ele criar uma coisa com um nome que ja existe devia aparecer um popup ou assim
+
 @Composable
 fun CreateAllianceTemplate(
+    viewModel: AlliancesViewModel,
     modifier: Modifier,
-    onComplete: (Boolean) -> Unit
+    onClickCreateAlliance: (Boolean) -> Unit
 ) {
-    val chatRepository: ChatViewModel = ChatViewModel()
     var chatName by remember { mutableStateOf("") }
     var chatDescription by remember { mutableStateOf("") }
 
@@ -59,11 +61,30 @@ fun CreateAllianceTemplate(
 
             Button(
                 onClick = {
-                    chatRepository.createChat(
+                    val result = viewModel.createChat(
                         chatName = chatName,
                         owner = "mafalda",
                         description = chatDescription,
                     )
+                    viewModel.addMember(
+                        chatName,
+                        "123456",
+                        "Joao",
+                        "entered"
+                    )
+                    viewModel.addMember(
+                        chatName,
+                        "345678",
+                        "Maria",
+                        "entered"
+                    )
+                    viewModel.addMember(
+                        chatName,
+                        "2345678",
+                        "Catarina",
+                        "entered"
+                    )
+                    onClickCreateAlliance(result)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = chatName.isNotBlank() && chatDescription.isNotBlank()
