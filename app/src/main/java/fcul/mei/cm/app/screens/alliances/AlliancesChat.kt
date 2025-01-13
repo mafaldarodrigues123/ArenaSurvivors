@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,31 +33,57 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import fcul.mei.cm.app.R
 import fcul.mei.cm.app.database.AlliancesRepository
-import fcul.mei.cm.app.domain.Alliances
+import fcul.mei.cm.app.domain.Message
 import fcul.mei.cm.app.domain.User
+import fcul.mei.cm.app.utils.CollectionPath
 import fcul.mei.cm.app.viewmodel.AlliancesViewModel
 
 
-// TODO quando nao tiver mensagens deve aparecer "no messages yet, start talking" ou alguma coisa assim
-// TODO enviar a mensagem
 // TODO quando o owner manda mensagem aparecer owner
 
 @Composable
 fun ChatTemplate(
     viewModel: AlliancesViewModel,
+    allianceId: String,
     modifier: Modifier = Modifier
 ) {
-    val messages = remember { mutableStateListOf<String>() }
+    val messages = remember { mutableStateListOf<Message>() }
     var inputText by remember { mutableStateOf(TextFieldValue("")) }
     var isPanelVisible by remember { mutableStateOf(false) } // Controla a visibilidade da janela deslizante
-    var a by remember { mutableStateOf<List<User>>(emptyList()) }
-    LaunchedEffect (Unit){
-        AlliancesRepository().getAllMembers("AAAAAAAAA").collect{
-            Log.d("AAAAAAA", "$it")
-            a = it
+    var members by remember { mutableStateOf<List<User>>(emptyList()) }
+    val db = Firebase.firestore
+
+    LaunchedEffect(Unit) {
+        //todo remove hard coded chat name
+        AlliancesRepository().getAllMembers("1").collect {
+            Log.d("FETCHING MEMBERS", "$it")
+            members = it
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val chatRef = db.collection(CollectionPath.ALLIANCES).document(allianceId).collection(CollectionPath.CHAT)
+
+        chatRef.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.e("FireStore", "ERROR: ${error.message}")
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null) {
+                val updatedMessages = snapshot.documents.mapNotNull { document ->
+                    document.toObject(Message::class.java)
+                }
+                messages.clear()
+                messages.addAll(updatedMessages.sortedBy { it.timestamp })
+            }
         }
     }
 
@@ -69,14 +93,25 @@ fun ChatTemplate(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                reverseLayout = true
-            ) {
-                items(messages.size) { index ->
-                    MessageBubble(message = messages[messages.size - 1 - index])
+            if (messages.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(stringResource(R.string.start_talking), color = Color.Gray)
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    reverseLayout = true
+                ) {
+                    items(messages.sortedByDescending { it.timestamp }) { message ->
+                        MessageBubble(message = message.text)
+                    }
                 }
             }
 
@@ -96,7 +131,7 @@ fun ChatTemplate(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     decorationBox = { innerTextField ->
                         if (inputText.text.isEmpty()) {
-                            Text("Type a message...", color = Color.Gray)
+                            Text(stringResource(R.string.type_message), color = Color.Gray)
                         }
                         innerTextField()
                     }
@@ -104,11 +139,11 @@ fun ChatTemplate(
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(onClick = {
                     if (inputText.text.isNotBlank()) {
-                        messages.add(inputText.text)
+                        viewModel.sendMessageToFireStore("1", inputText.text)
                         inputText = TextFieldValue("")
                     }
                 }) {
-                    Text("Send")
+                    Text(stringResource(R.string.send_message))
                 }
             }
 
@@ -116,7 +151,7 @@ fun ChatTemplate(
 
             // Botão para abrir a janela deslizante
             Button(onClick = { isPanelVisible = true }) {
-                Text("Abrir Janela")
+                Text(stringResource(R.string.open_window))
             }
         }
 
@@ -130,8 +165,11 @@ fun ChatTemplate(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(300.dp)
-                    .background(Color.LightGray, shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
-                    .align(Alignment.CenterEnd) // Garante que a janela fique à direita
+                    .background(
+                        Color.LightGray,
+                        shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                    )
+                    .align(Alignment.CenterEnd)
             ) {
                 Column(
                     modifier = Modifier
@@ -149,8 +187,8 @@ fun ChatTemplate(
 
                     Spacer(modifier = Modifier.height(16.dp))
                     LazyColumn {
-                        items(a) { group ->
-                            UsersCard(group)
+                        items(members) { member ->
+                            UsersCard(member)
                         }
                     }
                 }
@@ -158,7 +196,6 @@ fun ChatTemplate(
         }
     }
 }
-
 
 @Composable
 fun MessageBubble(message: String) {
@@ -179,7 +216,6 @@ fun MessageBubble(message: String) {
     }
 }
 
-
 @Composable
 fun UsersCard(user: User) {
     Card(
@@ -198,7 +234,7 @@ fun UsersCard(user: User) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Name: ${user.name}",
+                    text = stringResource(R.string.name) + {user.name},
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -215,7 +251,7 @@ fun UsersCard(user: User) {
             Button(
                 onClick = { /* Ação do botão */ }
             ) {
-                Text("Request to join")
+                Text(stringResource(R.string.request_to_join))
             }
         }
     }

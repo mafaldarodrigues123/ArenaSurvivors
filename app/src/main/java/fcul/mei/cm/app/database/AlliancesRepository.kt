@@ -5,6 +5,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import fcul.mei.cm.app.domain.Alliances
 import fcul.mei.cm.app.domain.User
+import fcul.mei.cm.app.utils.CollectionPath
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -39,8 +40,8 @@ class AlliancesRepository {
                 )
 
 
-                db.collection("chats").document(chatName)
-                    .collection("participants").document(owner)
+                db.collection(CollectionPath.CHATS).document(chatName)
+                    .collection(CollectionPath.PARTICIPANTS).document(owner)
                     .set(adminData)
                     .addOnSuccessListener {
                         println("Chat and admin participant created successfully")
@@ -59,7 +60,7 @@ class AlliancesRepository {
 
     fun getAllChats(): Flow<List<Alliances>> = flow {
         try {
-            val initialList = db.collection("chats")
+            val initialList = db.collection(CollectionPath.CHATS)
                 .get()
                 .await()
                 .map { document -> document.toObject(Alliances::class.java) }
@@ -72,8 +73,8 @@ class AlliancesRepository {
 
     fun getAllMembers(chatName: String) = flow {
         try {
-            val members = db.collection("chats").document(chatName)
-                .collection("participants")
+            val members = db.collection(CollectionPath.CHATS).document(chatName)
+                .collection(CollectionPath.PARTICIPANTS)
                 .get()
                 .await()
                 .map { document -> document.toObject(User::class.java)  }
@@ -101,8 +102,8 @@ class AlliancesRepository {
             "joinedAt" to System.currentTimeMillis()
         )
 
-        db.collection("chats").document(chatName)
-            .collection("participants").document(memberId)
+        db.collection(CollectionPath.CHATS).document(chatName)
+            .collection(CollectionPath.PARTICIPANTS).document(memberId)
             .set(memberData)
             .addOnSuccessListener {
                 Log.d("ALLIANCES", "Member added successfully with status: $status")

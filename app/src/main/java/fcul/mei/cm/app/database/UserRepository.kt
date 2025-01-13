@@ -3,21 +3,26 @@ package fcul.mei.cm.app.database
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import fcul.mei.cm.app.domain.User
+import fcul.mei.cm.app.utils.CollectionPath
 
 class UserRepository {
-    val db = Firebase.firestore
-    val chatRepository = AlliancesRepository()
+    private val db = Firebase.firestore
+    private val chatRepository = AlliancesRepository()
 
 
-    fun addParticipantToChat(chatName: String, participantId: String, onComplete: (Boolean) -> Unit) {
+    private fun addParticipantToChat(
+        chatName: String,
+        participantId: String,
+        onComplete: (Boolean) -> Unit
+    ) {
         val participantData = hashMapOf(
             "id" to participantId,
             "role" to "member",
             "joinedAt" to System.currentTimeMillis()
         )
 
-        db.collection("chats").document(chatName)
-            .collection("participants").document(participantId)
+        db.collection(CollectionPath.CHATS).document(chatName)
+            .collection(CollectionPath.PARTICIPANTS).document(participantId)
             .set(participantData)
             .addOnSuccessListener {
                 println("Participant added successfully")
@@ -35,8 +40,8 @@ class UserRepository {
         participantId: String,
         onComplete: (Boolean) -> Unit
     ) {
-        val participantRef = db.collection("chats").document(chatName)
-            .collection("participants").document(removerId)
+        val participantRef = db.collection(CollectionPath.CHATS).document(chatName)
+            .collection(CollectionPath.PARTICIPANTS).document(removerId)
 
         participantRef.get()
             .addOnSuccessListener { document ->
@@ -58,8 +63,8 @@ class UserRepository {
         participantId: String,
         onComplete: (Boolean) -> Unit
     ) {
-        db.collection("chats").document(chatName)
-            .collection("participants").document(participantId)
+        db.collection(CollectionPath.CHATS).document(chatName)
+            .collection(CollectionPath.PARTICIPANTS).document(participantId)
             .delete()
             .addOnSuccessListener {
                 println("Participant removed successfully")
@@ -71,7 +76,7 @@ class UserRepository {
             }
     }
 
-    fun addUser(user: User, onComplete: (Boolean) -> Unit){
+    fun addUser(user: User, onComplete: (Boolean) -> Unit) {
         val userData = hashMapOf(
             "id" to user.id,
             "district" to user.district,
@@ -79,7 +84,7 @@ class UserRepository {
             "creationTime" to System.currentTimeMillis()
         )
 
-        db.collection("users").document(user.id)
+        db.collection(CollectionPath.USERS).document(user.id)
             .set(userData)
             .addOnSuccessListener {
                 println("User added successfully")
@@ -91,23 +96,23 @@ class UserRepository {
             }
 
         getAllUser { users ->
-            val sameDistrictUser = users.firstOrNull{user.district == it.district}
-            if (sameDistrictUser != null){
+            val sameDistrictUser = users.firstOrNull { user.district == it.district }
+            if (sameDistrictUser != null) {
                 chatRepository.createChat(
                     chatName = "district ${user.district}",
                     owner = user.id,
                     description = "Same district",
-                ){}
+                ) {}
                 addParticipantToChat(
                     chatName = "district ${user.district}",
                     participantId = sameDistrictUser.id,
-                ){}
+                ) {}
             }
         }
     }
 
     private fun verifyUser(userId: String, callback: (User?) -> Unit) {
-        db.collection("users")
+        db.collection(CollectionPath.USERS)
             .document(userId)
             .get()
             .addOnSuccessListener { document ->
@@ -124,7 +129,7 @@ class UserRepository {
     }
 
     fun getUser(userId: String, callback: (User?) -> Unit) {
-        db.collection("users")
+        db.collection(CollectionPath.USERS)
             .get()
             .addOnSuccessListener { result ->
                 val users = result.map { document ->
@@ -137,9 +142,8 @@ class UserRepository {
             }
     }
 
-
-     fun getAllUser(callback: (List<User>) -> Unit) {
-        db.collection("users")
+    fun getAllUser(callback: (List<User>) -> Unit) {
+        db.collection(CollectionPath.USERS)
             .get()
             .addOnSuccessListener { result ->
                 val users = result.map { document ->
@@ -151,5 +155,4 @@ class UserRepository {
                 callback(emptyList())
             }
     }
-
 }
