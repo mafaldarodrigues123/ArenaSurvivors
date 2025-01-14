@@ -27,7 +27,7 @@ class AlliancesRepository {
             "creationTime" to System.currentTimeMillis()
         )
 
-        db.collection("chats").document(chatName)
+        db.collection(CollectionPath.CHATS).document(chatName)
             .set(chatData)
             .addOnSuccessListener {
                 val adminData = hashMapOf(

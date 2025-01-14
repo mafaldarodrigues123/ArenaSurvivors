@@ -47,6 +47,7 @@ import fcul.mei.cm.app.viewmodel.AlliancesViewModel
 
 
 // TODO quando o owner manda mensagem aparecer owner
+//todo remove hard coded chat name
 
 @Composable
 fun ChatTemplate(
@@ -61,7 +62,6 @@ fun ChatTemplate(
     val db = Firebase.firestore
 
     LaunchedEffect(Unit) {
-        //todo remove hard coded chat name
         AlliancesRepository().getAllMembers("1").collect {
             Log.d("FETCHING MEMBERS", "$it")
             members = it
