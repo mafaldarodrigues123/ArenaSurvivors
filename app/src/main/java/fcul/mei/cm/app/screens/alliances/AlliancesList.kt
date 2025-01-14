@@ -59,8 +59,6 @@ fun AlliancesList(
             }
         }
     }
-
-
 }
 
 @Composable

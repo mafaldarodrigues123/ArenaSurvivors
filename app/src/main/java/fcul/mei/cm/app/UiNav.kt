@@ -1,6 +1,5 @@
 package fcul.mei.cm.app
 
-import fcul.mei.cm.app.viewmodel.FitnessViewModel
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.compose.runtime.Composable
@@ -9,15 +8,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import fcul.mei.cm.app.screens.alliances.ChatTemplate
-import fcul.mei.cm.app.screens.Home
-import fcul.mei.cm.app.screens.alliances.CreateAllianceTemplate
-import fcul.mei.cm.app.screens.alliances.AlliancesList
-import fcul.mei.cm.app.screens.health.AccelerometerGame
 import fcul.mei.cm.app.screens.AddUserScreen
-import fcul.mei.cm.app.utils.Routes
+import fcul.mei.cm.app.screens.Home
+import fcul.mei.cm.app.screens.alliances.AlliancesList
+import fcul.mei.cm.app.screens.alliances.ChatTemplate
+import fcul.mei.cm.app.screens.alliances.CreateAllianceTemplate
+import fcul.mei.cm.app.screens.health.AccelerometerGame
 import fcul.mei.cm.app.screens.map.ArenaMapWithSendCoordinates
+import fcul.mei.cm.app.utils.Routes
 import fcul.mei.cm.app.viewmodel.AlliancesViewModel
+import fcul.mei.cm.app.viewmodel.FitnessViewModel
 import fcul.mei.cm.app.viewmodel.UserViewModel
 
 @Composable
@@ -52,6 +52,15 @@ fun UiNav(
                 }
             )
         }
+
+        composable(route = Routes.ALLIANCES.name) {
+            ChatTemplate(
+                viewModel = chatViewModel,
+                modifier = modifier,
+                allianceId = "1"
+            )
+        }
+
         composable(route = Routes.ALLIANCES_LIST.name) {
             AlliancesList(
                 modifier = modifier,
@@ -79,7 +88,8 @@ fun UiNav(
                 viewModel = AlliancesViewModel(UserViewModel(
                     LocalContext.current
                 )),
-                modifier = modifier
+                modifier = modifier,
+                allianceId = "1"
             )
         }
 

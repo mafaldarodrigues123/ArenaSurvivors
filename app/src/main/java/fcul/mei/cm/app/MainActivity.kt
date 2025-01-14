@@ -1,6 +1,5 @@
 package fcul.mei.cm.app
 
-import fcul.mei.cm.app.viewmodel.FitnessViewModel
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
@@ -22,8 +21,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import fcul.mei.cm.app.ui.theme.AppTheme
+import fcul.mei.cm.app.viewmodel.FitnessViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
                             ),
                             title = {
                                 Text(
-                                    text = "Arena Survivors",
+                                    text = stringResource(R.string.title),
                                     color = Color.White,
                                 )
                             },

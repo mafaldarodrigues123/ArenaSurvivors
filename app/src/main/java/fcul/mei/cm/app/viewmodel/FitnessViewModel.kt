@@ -1,6 +1,7 @@
 package fcul.mei.cm.app.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -11,11 +12,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class FitnessViewModel : ViewModel() {
-    var sprintDetected by mutableStateOf(false)
-    var sprintTime by mutableStateOf(0f)
+    private var sprintDetected by mutableStateOf(false)
+    var sprintTime by mutableFloatStateOf(0f)
     private var lastTime = System.nanoTime()
 
     private var sprintStartTime: Long? = null // Track when the sprint starts
+
     init {
         // Start a coroutine to track time
         viewModelScope.launch(Dispatchers.Default) {
@@ -40,10 +42,10 @@ class FitnessViewModel : ViewModel() {
 
     // Call this method to update sprintDetected state from sensor
     fun onSensorChanged(accelerationMagnitude: Float, x: Float) {
-        if (accelerationMagnitude > 15) {
-            sprintDetected = true
+        sprintDetected = if (accelerationMagnitude > 15) {
+            true
         } else {
-            sprintDetected = false
+            false
         }
     }
 }
