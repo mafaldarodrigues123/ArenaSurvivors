@@ -47,7 +47,7 @@ import fcul.mei.cm.app.viewmodel.AlliancesViewModel
 
 
 // TODO quando o owner manda mensagem aparecer owner
-//todo remove hard coded chat name
+// todo remove hard coded chat name
 
 @Composable
 fun ChatTemplate(
