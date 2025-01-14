@@ -1,9 +1,18 @@
 package fcul.mei.cm.app.screens.map
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
+import android.os.Bundle
+import android.os.Looper
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +37,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -42,25 +52,38 @@ import com.google.android.gms.maps.model.MarkerOptions
 import fcul.mei.cm.app.database.CoordinatesRepository
 import fcul.mei.cm.app.domain.Coordinates
 import fcul.mei.cm.app.viewmodel.ArenaMapViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
+
+private val LOCATION_PERMISSION_REQUEST_CODE = 1000
+private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 
 @Composable
 fun ArenaMapUi(
     modifier: Modifier = Modifier,
-    pointLatitude: Double = 0.0,
-    pointLongitude: Double = 0.0,
     onSendCoordinates: (Double, Double) -> Unit = { _, _ -> },
 ) {
-
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val coordinatesViewModel = viewModel<ArenaMapViewModel>()
     val mapView = remember { MapView(context) }
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
-    val latitude = 36.9796541
-    val longitude = -25.1176215
+    // State for user's location
+    var userLatitude by remember { mutableDoubleStateOf(Double.NaN) }
+    var userLongitude by remember { mutableDoubleStateOf(Double.NaN) }
+    var isLocationAvailable by remember { mutableStateOf(false) } // Track if location is available
     val initialZoom = 13f
-    var zoomLevelMap: GoogleMap? = null
-
+    var googleMap: GoogleMap? = null
+    var hasZoomedToInitialLocation by remember { mutableStateOf(false) } // Track initial zoom
+    var userCircle by remember { mutableStateOf<Circle?>(null) }
+    // Lifecycle handling
     DisposableEffect(lifecycleOwner) {
         val lifecycle = lifecycleOwner.lifecycle
         val lifecycleObserver = object : DefaultLifecycleObserver {
@@ -96,13 +119,68 @@ fun ArenaMapUi(
         }
     }
 
+    // Check and request location permissions
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        ActivityCompat.requestPermissions(
+            (context as ComponentActivity),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    } else {
+        // Fetch the last known location
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                userLatitude = location.latitude
+                userLongitude = location.longitude
+                isLocationAvailable = true // Mark location as available
+            }
+        }
+
+        // Continuous location updates
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY, 5000L
+        ).setMinUpdateIntervalMillis(2000L)
+            .build()
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            context.mainExecutor,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    locationResult.lastLocation?.let { location ->
+                        userLatitude = location.latitude
+                        userLongitude = location.longitude
+                        isLocationAvailable = true
+                        googleMap?.let { map ->
+                            updateUserCircle(map, userLatitude, userLongitude, userCircle) { newCircle ->
+                                userCircle = newCircle
+                            }
+                            // Zoom to user's location only the first time
+                            if (!hasZoomedToInitialLocation) {
+                                map.moveCamera(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(userLatitude, userLongitude),
+                                        initialZoom
+                                    )
+                                )
+                                hasZoomedToInitialLocation = true
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    // Map UI
     Box(modifier = modifier) {
         AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize()) { view ->
-            view.getMapAsync { googleMap ->
-                zoomLevelMap = googleMap
-
-                val initialLocation = LatLng(latitude, longitude)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, initialZoom))
+            view.getMapAsync { map ->
+                googleMap = map
 
                 try {
                     KmlLayer(googleMap, R.raw.arenasurvivormap, context).addLayerToMap()
@@ -110,28 +188,25 @@ fun ArenaMapUi(
                     Log.e("MAP", "Error loading KML layer: ${e.message}")
                 }
 
-                if (pointLatitude != 0.0 && pointLongitude != 0.0) {
-                    val position = LatLng(pointLatitude, pointLongitude)
-                    googleMap.addMarker(
-                        MarkerOptions()
-                            .position(position)
-                            .title(
-                                "Marker added at (${pointLatitude}, ${pointLongitude})"
-                            )
+                map.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(userLatitude, userLongitude),
+                        initialZoom
                     )
-                }
+                )
             }
         }
 
         Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp),
+                .padding(16.dp)
+                .padding(end= 80.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Zoom In Button
             Button(
-                onClick = { zoomLevelMap?.animateCamera(CameraUpdateFactory.zoomIn()) },
+                onClick = { googleMap?.animateCamera(CameraUpdateFactory.zoomIn()) },
                 modifier = Modifier.size(40.dp),
                 contentPadding = PaddingValues(0.dp)
             ) {
@@ -139,22 +214,43 @@ fun ArenaMapUi(
             }
             // Zoom Out Button
             Button(
-                onClick = { zoomLevelMap?.animateCamera(CameraUpdateFactory.zoomOut()) },
+                onClick = { googleMap?.animateCamera(CameraUpdateFactory.zoomOut()) },
                 modifier = Modifier.size(40.dp),
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text("-", fontSize = 24.sp)
             }
-            Button(
-                onClick = { onSendCoordinates(pointLatitude, pointLongitude) },
-                modifier = Modifier
-                    .padding(16.dp)
-            ) {
-                Text("Send Your Coordinates")
-            }
         }
     }
 }
+
+
+
+fun updateUserCircle(
+    googleMap: GoogleMap,
+    latitude: Double,
+    longitude: Double,
+    existingCircle: Circle?,
+    onCircleUpdated: (Circle) -> Unit
+) {
+    val newPosition = LatLng(latitude, longitude)
+
+    if (existingCircle == null) {
+        // Create a new circle if it doesn't exist
+        val newCircle = googleMap.addCircle(
+            CircleOptions()
+                .center(newPosition)
+                .radius(10.0) // 10 meters
+                .fillColor(0x5500ffff) // Semi-transparent green
+                .strokeWidth(2f)
+        )
+        onCircleUpdated(newCircle)
+    } else {
+        // Update the existing circle's position
+        existingCircle.center = newPosition
+    }
+}
+
 
 @Composable
 fun SendCoordinatesDialog(
@@ -202,6 +298,7 @@ fun SendCoordinatesDialog(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun ArenaMapWithSendCoordinates(
     modifier: Modifier = Modifier
@@ -213,8 +310,8 @@ fun ArenaMapWithSendCoordinates(
 
     Box(Modifier.fillMaxWidth()) {
         ArenaMapUi(
-            pointLatitude = userLatitude,
-            pointLongitude = userLongitude,
+//            pointLatitude = userLatitude,
+//            pointLongitude = userLongitude,
             onSendCoordinates = { _, _ -> showDialog = true }
         )
 

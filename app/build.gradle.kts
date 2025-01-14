@@ -71,6 +71,7 @@ dependencies {
     implementation("com.mapbox.extension:maps-compose:11.8.0")
     implementation ("androidx.health.connect:connect-client:1.1.0-alpha10")
     implementation(libs.firebase.database)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
