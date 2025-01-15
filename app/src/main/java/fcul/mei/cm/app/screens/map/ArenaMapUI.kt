@@ -58,8 +58,13 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.Marker
+import com.google.maps.android.SphericalUtil
+import com.google.maps.android.data.kml.KmlPlacemark
+import com.google.maps.android.data.kml.KmlPoint
 
 private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -83,6 +88,7 @@ fun ArenaMapUi(
     var googleMap: GoogleMap? = null
     var hasZoomedToInitialLocation by remember { mutableStateOf(false) } // Track initial zoom
     var userCircle by remember { mutableStateOf<Circle?>(null) }
+    var userMarker by remember { mutableStateOf<Marker?>(null) }
     // Lifecycle handling
     DisposableEffect(lifecycleOwner) {
         val lifecycle = lifecycleOwner.lifecycle
@@ -142,8 +148,8 @@ fun ArenaMapUi(
 
         // Continuous location updates
         val locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY, 5000L
-        ).setMinUpdateIntervalMillis(2000L)
+            Priority.PRIORITY_HIGH_ACCURACY, 2000L
+        ).setMinUpdateIntervalMillis(1000L)
             .build()
 
         fusedLocationClient.requestLocationUpdates(
@@ -156,8 +162,8 @@ fun ArenaMapUi(
                         userLongitude = location.longitude
                         isLocationAvailable = true
                         googleMap?.let { map ->
-                            updateUserCircle(map, userLatitude, userLongitude, userCircle) { newCircle ->
-                                userCircle = newCircle
+                            updateUserMarker(map, userLatitude, userLongitude, userMarker) { newMarker ->
+                                userMarker = newMarker
                             }
                             // Zoom to user's location only the first time
                             if (!hasZoomedToInitialLocation) {
@@ -183,7 +189,7 @@ fun ArenaMapUi(
                 googleMap = map
 
                 try {
-                    KmlLayer(googleMap, R.raw.arenasurvivormap, context).addLayerToMap()
+                    KmlLayer(googleMap, R.raw.arenasurvivorlisbon, context).addLayerToMap()
                 } catch (e: Exception) {
                     Log.e("MAP", "Error loading KML layer: ${e.message}")
                 }
@@ -225,7 +231,7 @@ fun ArenaMapUi(
 }
 
 
-
+//eventally delete this
 fun updateUserCircle(
     googleMap: GoogleMap,
     latitude: Double,
@@ -248,6 +254,28 @@ fun updateUserCircle(
     } else {
         // Update the existing circle's position
         existingCircle.center = newPosition
+    }
+}
+
+fun updateUserMarker(googleMap: GoogleMap, latitude: Double, longitude: Double,
+                     userMarker: Marker?,  onMarkerUpdated: (Marker) -> Unit) {
+    val newPosition = LatLng(latitude, longitude)
+
+    if (userMarker == null) {
+        // Create a new marker if it doesn't exist
+        val newMarker = googleMap.addMarker(
+            MarkerOptions()
+                .position(newPosition)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_dot)) // Use your custom dot image
+                .anchor(0.5f, 0.5f) // Center the dot on the location
+                .zIndex(10f) // Keep the marker on top of other elements
+        )
+        if (newMarker != null) {
+            onMarkerUpdated(newMarker)
+        }
+    } else {
+        // Update the existing marker's position
+        userMarker.position = newPosition
     }
 }
 
