@@ -14,6 +14,7 @@ import fcul.mei.cm.app.screens.alliances.AlliancesList
 import fcul.mei.cm.app.screens.alliances.ChatTemplate
 import fcul.mei.cm.app.screens.alliances.CreateAllianceTemplate
 import fcul.mei.cm.app.screens.health.AccelerometerGame
+import fcul.mei.cm.app.screens.health.Request
 import fcul.mei.cm.app.screens.map.ArenaMapWithSendCoordinates
 import fcul.mei.cm.app.utils.Routes
 import fcul.mei.cm.app.viewmodel.AlliancesViewModel
@@ -94,7 +95,7 @@ fun UiNav(
         }
 
         composable(route = Routes.FITNESS.name) {
-            AccelerometerGame(sensorManager, accelerometer,fitnessViewModel)
+            Request()
             }
 
         composable(route = Routes.CREATE_USER.name) {

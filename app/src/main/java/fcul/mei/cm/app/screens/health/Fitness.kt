@@ -9,27 +9,40 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.PermissionController
+import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.StepsRecord
 import fcul.mei.cm.app.viewmodel.FitnessViewModel
+import kotlinx.coroutines.launch
 import kotlin.math.sqrt
 
 @Composable
@@ -44,11 +57,11 @@ fun Fitness(modifier: Modifier = Modifier, onClick: () -> Unit) {
     var temperature by remember { mutableStateOf(0f) }
 
     // Check and request permissions
-    LaunchedEffect(Unit) {
-        activity?.let {
-            requestSensorPermissions(it)
-        }
-    }
+  //  LaunchedEffect(Unit) {
+  //      activity?.let {
+  //          requestSensorPermissions(it)
+  //      }
+  //  }
 
     LaunchedEffect(Unit) {
         val stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
@@ -98,7 +111,7 @@ private fun calculateRestTime(values: FloatArray): Float {
 fun AccelerometerGame(sensorManager: SensorManager, accelerometer: Sensor?, fitnessViewModel: FitnessViewModel) {
     var sprintDetected by remember { mutableStateOf(false) }
     var dodgeDetected by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
     val viewModel = fitnessViewModel
     var listeningEnabled by remember { mutableStateOf(true) } // Track if listening is enabled
 
@@ -108,6 +121,8 @@ fun AccelerometerGame(sensorManager: SensorManager, accelerometer: Sensor?, fitn
     } else {
         Log.d("AccelerometerGame", "Accelerometer found and ready.")
     }
+
+
 
     // Listener to detect sensor events
     val sensorEventListener = remember {
@@ -123,7 +138,6 @@ fun AccelerometerGame(sensorManager: SensorManager, accelerometer: Sensor?, fitn
 
                     // Calculate the magnitude of acceleration
                     val accelerationMagnitude = sqrt(x * x + y * y + z * z)
-                    Log.d("AccelerometerGame", "Acceleration Magnitude: $accelerationMagnitude")
 
                     // Detect sprint (shaking rapidly)
                     if (accelerationMagnitude > 15) { // Adjust threshold as needed
@@ -194,19 +208,89 @@ fun AccelerometerGame(sensorManager: SensorManager, accelerometer: Sensor?, fitn
             Log.d("AccelerometerGame", "UI recomposed. Sprint: $sprintDetected, Dodge: $dodgeDetected")
         }
     }
+
 }
 
-private fun requestSensorPermissions(activity: Activity) {
-    val requiredPermissions = listOf(
-        Manifest.permission.ACTIVITY_RECOGNITION,
-        Manifest.permission.BODY_SENSORS
+@Composable
+fun Request() {
+    val context = LocalContext.current
+    val healthConnectManager = remember { HealthConnectManager(context = context) }
+    val permissions = setOf(
+        HealthPermission.getReadPermission(StepsRecord::class),
+        HealthPermission.getWritePermission(StepsRecord::class)
     )
+    val viewModel = remember { PermissionsViewModel(healthConnectManager) }
 
-    val permissionsToRequest = requiredPermissions.filter {
-        ContextCompat.checkSelfPermission(activity, it) != PackageManager.PERMISSION_GRANTED
+    PermissionScreen(
+        permissions = permissions,
+        viewModel = viewModel,
+        onPermissionsGranted = {
+            Log.d("yes","grantedddddd")
+            // Proceed with accessing data
+        },
+        onPermissionsDenied = {
+            Log.d("not","obviously not granted")
+            // Show a message or handle denied permissions
+        }
+    )
+}
+
+
+@Composable
+fun PermissionScreen(
+    permissions: Set<String>,
+    viewModel: PermissionsViewModel,
+    onPermissionsGranted: () -> Unit,
+    onPermissionsDenied: () -> Unit
+) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val permissionsGranted by viewModel.permissionsGranted.collectAsState()
+
+    // Permission request launcher
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        contract = viewModel.healthConnectManager.requestPermissionsActivityContract()
+    ) { grantedPermissions ->
+        if (grantedPermissions.containsAll(permissions)) {
+            onPermissionsGranted()
+        } else {
+            onPermissionsDenied()
+        }
     }
 
-    if (permissionsToRequest.isNotEmpty()) {
-        ActivityCompat.requestPermissions(activity, permissionsToRequest.toTypedArray(), 1001)
+    // Check permissions on first render
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            viewModel.checkPermissions(permissions)
+        }
+    }
+    Log.d("granted", permissionsGranted.toString())
+    // UI
+    if (permissionsGranted) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.LightGray),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+        Text("Permissions Granted! Accessing data...")}
+        onPermissionsGranted()
+    } else {
+        Log.d("w","tf")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.LightGray),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Permissions are required to use this feature.")
+            Button(onClick = {
+                viewModel.requestPermissions(permissions, requestPermissionLauncher)
+            }) {
+                Text("Request Permissions")
+            }
+        }
     }
 }
